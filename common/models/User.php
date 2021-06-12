@@ -31,8 +31,11 @@ class User extends ActiveRecord implements IdentityInterface
 
     const ROLE_TEACHER = 1;
     const ROLE_STUDENT = 2;
+    const ROLE_ADMIN = 3;
 
     public $name;
+    public $dept_name;
+    public $password;
 
 
 
@@ -60,6 +63,24 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            ['username', 'trim'],
+            ['username', 'required'],
+            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'string', 'min' => 2, 'max' => 255],
+
+            ['name', 'trim'],
+            ['name', 'required'],
+            ['name', 'string', 'min' => 2, 'max' => 255],
+
+            ['email', 'trim'],
+            ['email', 'email'],
+            ['email','required'],
+            ['email', 'string', 'max' => 255],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+
+            ['password', 'required'],
+            ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
+
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             ['role','default','value'=>self::ROLE_STUDENT],
@@ -76,6 +97,7 @@ class User extends ActiveRecord implements IdentityInterface
                 $teacher = new Instructor();
                 $teacher->ID = $this->id;
                 $teacher->name = $this->name;
+                $teacher->dept_name =  $this->dept_name;
                 $teacher->save();
             }
         }
@@ -84,6 +106,7 @@ class User extends ActiveRecord implements IdentityInterface
                 $student = new Student();
                 $student->ID = $this->id;
                 $student->name = $this->name;
+                $student->dept_name = $this->dept_name;
                 $student->save();
             }
         }
