@@ -28,6 +28,7 @@ AppAsset::register($this);
 
 <div class="wrap">
     <?php
+    $user = \common\models\User::findOne(['id'=>Yii::$app->user->id]);
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
@@ -44,7 +45,9 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
-        $menuItems[] = ['label' => 'create instructor', 'url' => ['/user/create','role'=>\common\models\User::ROLE_TEACHER]];
+        if($user && $user->role == \common\models\User::ROLE_ADMIN) {
+            $menuItems[] = ['label' => 'create instructor', 'url' => ['/user/create', 'role' => \common\models\User::ROLE_TEACHER]];
+        }
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

@@ -3,9 +3,11 @@
 /* @var $this yii\web\View */
 
 $this->title = 'My Yii Application';
+$user = \common\models\User::findOne(['id'=>Yii::$app->user->id])
 ?>
 <div class="site-index">
 
+    <?php if(!Yii::$app->user->isGuest){ ?>
     <div class="jumbotron">
         <h1>Congratulations!</h1>
 
@@ -18,7 +20,17 @@ $this->title = 'My Yii Application';
 
         <div class="row text-center">
             <div class="col-lg-4">
-              <a class="btn btn-success" href=<?= \yii\helpers\Url::to(['takes/index']) ?>> my lessons</a>
+                <?php
+                    $url='';
+                    if($user) {
+                        if ( $user->role == \common\models\User::ROLE_STUDENT) {
+                            $url = 'takes/index';
+                        } elseif ( $user->role == \common\models\User::ROLE_TEACHER) {
+                            $url = 'teaches/index';
+                        }
+                    }
+                ?>
+              <a class="btn btn-success" href=<?= \yii\helpers\Url::to([$url]) ?>> my lessons</a>
                 <p>
                     see what you have for this semester
                 </p>
@@ -42,4 +54,9 @@ $this->title = 'My Yii Application';
         </div>
 
     </div>
+    <?php }else{ ?>
+        <div class="jumbotron">
+            <a class="btn btn-lg btn-success" href=<?= \yii\helpers\Url::to(['site/login']) ?> >Login</a>
+        </div>
+    <?php } ?>
 </div>
