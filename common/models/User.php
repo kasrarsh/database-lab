@@ -32,6 +32,8 @@ class User extends ActiveRecord implements IdentityInterface
     const ROLE_TEACHER = 1;
     const ROLE_STUDENT = 2;
 
+    public $name;
+
 
 
     /**
@@ -60,7 +62,9 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
-            ['role','required']
+            ['role','default','value'=>self::ROLE_STUDENT],
+            ['role','required'],
+
         ];
     }
 
@@ -68,14 +72,20 @@ class User extends ActiveRecord implements IdentityInterface
     {
         parent::afterSave($insert, $changedAttributes);
         if($this->role == self::ROLE_TEACHER){
-           $teacher = new Instructor();
-           $teacher->ID = $this->id;
-           $teacher->save();
+            if(empty(Instructor::findOne(['ID'=>$this->id]))) {
+                $teacher = new Instructor();
+                $teacher->ID = $this->id;
+                $teacher->name = $this->name;
+                $teacher->save();
+            }
         }
         if($this->role == self::ROLE_STUDENT){
-            $student = new Student();
-            $student->ID = $this->id;
-            $student->save();
+            if(empty(Student::findOne(['ID'=>$this->id]))) {
+                $student = new Student();
+                $student->ID = $this->id;
+                $student->name = $this->name;
+                $student->save();
+            }
         }
     }
 
