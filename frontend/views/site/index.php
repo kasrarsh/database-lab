@@ -24,13 +24,13 @@ $user = \common\models\User::findOne(['id'=>Yii::$app->user->id])
                     $url='';
                     if($user) {
                         if ( $user->role == \common\models\User::ROLE_STUDENT) {
-                            $url = 'takes/index';
+                            $url = ['takes/index','TakesSearch'=>['ID'=>$user->id]];
                         } elseif ( $user->role == \common\models\User::ROLE_TEACHER) {
-                            $url = 'teaches/index';
+                            $url = ['teaches/index','TeachesSearch'=>['ID'=>$user->id]];
                         }
                     }
                 ?>
-              <a class="btn btn-success" href=<?= \yii\helpers\Url::to([$url]) ?>> my lessons</a>
+              <a class="btn btn-success" href=<?= \yii\helpers\Url::to($url) ?>> my lessons</a>
                 <p>
                     see what you have for this semester
                 </p>
