@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel common\models\TakesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Takes');
+$this->title = Yii::t('app', 'My Lessons');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="takes-index">
@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Takes'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'take a new lesson'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,9 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'sec_id',
             'semester',
             'year',
-            //'grade',
+            'grade',
 
-            ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 

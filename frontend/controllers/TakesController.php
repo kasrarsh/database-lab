@@ -36,6 +36,7 @@ class TakesController extends Controller
     public function actionIndex()
     {
         $searchModel = new TakesSearch();
+        $searchModel->ID = Yii::$app->user->id;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [

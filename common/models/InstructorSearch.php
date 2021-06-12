@@ -59,10 +59,10 @@ class InstructorSearch extends Instructor
         // grid filtering conditions
         $query->andFilterWhere([
             'salary' => $this->salary,
+            'ID' => $this->ID
         ]);
 
-        $query->andFilterWhere(['like', 'ID', $this->ID])
-            ->andFilterWhere(['like', 'name', $this->name])
+        $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'dept_name', $this->dept_name]);
 
         return $dataProvider;

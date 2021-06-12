@@ -59,10 +59,11 @@ class StudentSearch extends Student
         // grid filtering conditions
         $query->andFilterWhere([
             'tot_cred' => $this->tot_cred,
+            'ID' => $this->ID
+
         ]);
 
-        $query->andFilterWhere(['like', 'ID', $this->ID])
-            ->andFilterWhere(['like', 'name', $this->name])
+        $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'dept_name', $this->dept_name]);
 
         return $dataProvider;

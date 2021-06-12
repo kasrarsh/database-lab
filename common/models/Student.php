@@ -33,9 +33,8 @@ class Student extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ID', 'name'], 'required'],
+            [['ID'], 'required'],
             [['tot_cred'], 'number'],
-            [['ID'], 'string', 'max' => 5],
             [['name', 'dept_name'], 'string', 'max' => 20],
             [['ID'], 'unique'],
             [['dept_name'], 'exist', 'skipOnError' => true, 'targetClass' => Department::className(), 'targetAttribute' => ['dept_name' => 'dept_name']],

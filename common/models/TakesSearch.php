@@ -59,10 +59,10 @@ class TakesSearch extends Takes
         // grid filtering conditions
         $query->andFilterWhere([
             'year' => $this->year,
+            'ID' => $this->ID
         ]);
 
-        $query->andFilterWhere(['like', 'ID', $this->ID])
-            ->andFilterWhere(['like', 'course_id', $this->course_id])
+        $query->andFilterWhere(['like', 'course_id', $this->course_id])
             ->andFilterWhere(['like', 'sec_id', $this->sec_id])
             ->andFilterWhere(['like', 'semester', $this->semester])
             ->andFilterWhere(['like', 'grade', $this->grade]);
