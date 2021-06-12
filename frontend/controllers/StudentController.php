@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Department;
 use Yii;
 use common\models\Student;
 use common\models\StudentSearch;
@@ -94,6 +95,18 @@ class StudentController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionMyInfo(){
+        $model = $this->findModel(Yii::$app->user->id);
+
+        $departments = Department::find()->select('dept_name')->indexBy('dept_name')->column();
+        if($model->load(Yii::$app->request->post()) && $model->save()){
+            return $this->redirect(['view','id'=>$model->ID]);
+        }
+        return $this->render('my-info',[
+            'model'=>$model,
+            'departments' => $departments
+        ]);
+    }
 
     /**
      * Deletes an existing Student model.
@@ -118,7 +131,7 @@ class StudentController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Student::findOne($id)) !== null) {
+        if (($model = Student::findOne(['ID'=> $id])) !== null) {
             return $model;
         }
 
