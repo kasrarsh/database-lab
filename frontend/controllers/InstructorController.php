@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Department;
 use Yii;
 use common\models\Instructor;
 use common\models\InstructorSearch;
@@ -95,6 +96,19 @@ class InstructorController extends Controller
         ]);
     }
 
+    public function actionMyInfo(){
+        $model = $this->findModel(Yii::$app->user->id);
+
+        $departments = Department::find()->select('dept_name')->indexBy('dept_name')->column();
+        if($model->load(Yii::$app->request->post()) && $model->save()){
+            return $this->redirect(['view','id'=>$model->ID]);
+        }
+        return $this->render('my-info',[
+            'model'=>$model,
+            'departments' => $departments
+        ]);
+    }
+
     /**
      * Deletes an existing Instructor model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -118,7 +132,7 @@ class InstructorController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Instructor::findOne($id)) !== null) {
+        if (($model = Instructor::findOne(['ID' => $id])) !== null) {
             return $model;
         }
 
