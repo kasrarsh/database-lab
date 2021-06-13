@@ -9,11 +9,10 @@ $user = \common\models\User::findOne(['id'=>Yii::$app->user->id])
 
     <?php if(!Yii::$app->user->isGuest){ ?>
     <div class="jumbotron">
-        <h1>Congratulations!</h1>
+        <h1>hello!</h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+        <p class="lead">welocome to your profile in kharazmi university</p>
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
     </div>
 
     <div class="body-content">
