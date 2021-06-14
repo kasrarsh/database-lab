@@ -18,24 +18,32 @@ $user = \common\models\User::findOne(['id'=>Yii::$app->user->id])
         <div class="body-content">
 
             <div class="row text-center">
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <a class="btn btn-success" href=<?= \yii\helpers\Url::to(['instructor/index']) ?>> instructors</a>
                     <p>
                         see all your instructors
                     </p>
 
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <a class="btn btn-success" href=<?= \yii\helpers\Url::to(['section/index']) ?>>sections</a>
                     <p>
                         see all sections
                     </p>
 
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <a class="btn btn-success" href=<?= \yii\helpers\Url::to(['course/index']) ?>>courses</a>
                     <p>
                         see all courses
+                    </p>
+
+                </div>
+
+                <div class="col-lg-3">
+                    <a class="btn btn-success" href=<?= \yii\helpers\Url::to(['classroom/index']) ?>>class rooms</a>
+                    <p>
+                        see all class rooms
                     </p>
 
                 </div>
