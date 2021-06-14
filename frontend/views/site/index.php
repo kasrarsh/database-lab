@@ -36,7 +36,7 @@ $user = \common\models\User::findOne(['id'=>Yii::$app->user->id])
 
             </div>
             <div class="col-lg-4">
-                <a class="btn btn-success" href=<?= \yii\helpers\Url::to(['site/index']) ?>> my report</a>
+                <a class="btn btn-success" href=<?= \yii\helpers\Url::to(['takes/my-report']) ?>> my report</a>
                 <p>
                     see what your reports and grades
                 </p>

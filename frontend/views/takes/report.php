@@ -11,28 +11,24 @@ $this->title = Yii::t('app', 'My Lessons');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="takes-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'take a new lesson'), ['takes/take-lesson'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'showFooter' => true,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'ID',
             'course_id',
             'sec_id',
             'semester',
             'year',
+            [
+                    'attribute'=>'grade',
+                    'footer'=>$average
+            ],
         ],
     ]); ?>
+
 
 
 </div>

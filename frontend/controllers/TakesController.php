@@ -120,6 +120,26 @@ class TakesController extends Controller
 
     }
 
+    public function actionMyReport(){
+        $searchModel = new TakesSearch();
+        $searchModel->ID = Yii::$app->user->id;
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $average = $this->calAverage($dataProvider->models);
+
+        return $this->render('report', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'average' => $average
+        ]);
+    }
+
+    public function calAverage($models){
+        $sum = 0;
+        foreach ($models as $take){
+            $sum += $take->grade;
+        }
+        return  number_format( $sum/count($models),2);
+    }
     /**
      * Updates an existing Takes model.
      * If update is successful, the browser will be redirected to the 'view' page.
