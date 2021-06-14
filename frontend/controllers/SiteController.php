@@ -14,6 +14,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\web\User;
 
 /**
  * Site controller
@@ -74,6 +75,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $user = \common\models\User::findOne(['id'=>Yii::$app->user->id]);
+        if($user->role == \common\models\User::ROLE_ADMIN){
+            return $this->render('index-admin');
+        }
         return $this->render('index');
     }
 
