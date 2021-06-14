@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($student, 'takes')->checkboxList($sectionItems,['class'=>'d-block']) ?>
+    <?= $form->field($student, 'takes')->checkboxList($sectionItems)->label('Take Your New Lessons') ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

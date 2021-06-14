@@ -86,7 +86,7 @@ class TakesController extends Controller
     public function actionTakeLesson(){
         $sections = Section::find()->all();
         $sectionItems = array();
-        $delimiter = '/';
+        $delimiter = ' / ';
         if(!Yii::$app->user->isGuest) {
             $student = Student::findOne(['ID' => Yii::$app->user->id]);
             foreach ($sections as $section) {

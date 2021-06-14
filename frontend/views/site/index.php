@@ -43,7 +43,7 @@ $user = \common\models\User::findOne(['id'=>Yii::$app->user->id])
 
             </div>
             <div class="col-lg-4">
-                <a class="btn btn-success" href=<?= \yii\helpers\Url::to(['site/index']) ?>> take lesson</a>
+                <a class="btn btn-success" href=<?= \yii\helpers\Url::to(['takes/take-lesson']) ?>> take lesson</a>
                 <p>
                     take new lessons
                 </p>
