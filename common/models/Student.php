@@ -19,6 +19,7 @@ use Yii;
  */
 class Student extends Main
 {
+    public $takes;
     /**
      * {@inheritdoc}
      */
@@ -38,6 +39,7 @@ class Student extends Main
             [['name', 'dept_name'], 'string', 'max' => 20],
             [['ID'], 'unique'],
             [['dept_name'], 'exist', 'skipOnError' => true, 'targetClass' => Department::className(), 'targetAttribute' => ['dept_name' => 'dept_name']],
+            ['takes','safe']
         ];
     }
 

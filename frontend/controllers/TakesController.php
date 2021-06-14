@@ -2,6 +2,9 @@
 
 namespace frontend\controllers;
 
+use common\models\Section;
+use common\models\Student;
+use common\models\User;
 use Yii;
 use common\models\Takes;
 use common\models\TakesSearch;
@@ -71,6 +74,7 @@ class TakesController extends Controller
     {
         $model = new Takes();
 
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'ID' => $model->ID, 'course_id' => $model->course_id, 'sec_id' => $model->sec_id, 'semester' => $model->semester, 'year' => $model->year]);
         }
@@ -78,6 +82,42 @@ class TakesController extends Controller
         return $this->render('create', [
             'model' => $model,
         ]);
+    }
+    public function actionTakeLesson(){
+        $sections = Section::find()->all();
+        $sectionItems = array();
+        $delimiter = '/';
+        if(!Yii::$app->user->isGuest) {
+            $student = Student::findOne(['ID' => Yii::$app->user->id]);
+            foreach ($sections as $section) {
+                $data = $section->sec_id.$delimiter.$section->course_id . $delimiter . $section->semester . $delimiter . $section->year . $delimiter . $section->building . $delimiter . $section->room_number;
+                array_push($sectionItems, $data);
+            }
+            if($student->load(Yii::$app->request->post())){
+                $allSaved = true;
+                foreach ($student->takes as $sectionIndex){
+                    $section = explode($delimiter, $sectionItems[$sectionIndex]);
+                    $take = new Takes();
+                    $take->ID = $student->ID;
+                    $take->sec_id = $section[0];
+                    $take->course_id = $section[1];
+                    $take->semester = $section[2];
+                    $take->year = intval($section[3]);
+                    if(!$take->saveModel()){
+                       $allSaved = false;
+                    }
+                }
+                if($allSaved){
+                    return $this->redirect(['takes/index']);
+                }
+            }
+            return $this->render('take-lesson', [
+                'student' => $student,
+                'sectionItems' => $sectionItems
+            ]);
+        }
+        return $this->redirect(['site/login']);
+
     }
 
     /**
