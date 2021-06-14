@@ -12,11 +12,10 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'course_id')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'dept_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'dept_name')->dropDownList($departments) ?>
 
     <?= $form->field($model, 'credits')->textInput(['maxlength' => true]) ?>
 

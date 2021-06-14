@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Department;
 use Yii;
 use common\models\Course;
 use common\models\CourseSearch;
@@ -65,13 +66,16 @@ class CourseController extends Controller
     public function actionCreate()
     {
         $model = new Course();
+        $departments = Department::find()->select('dept_name')->indexBy('dept_name')->column();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) &&  $model->saveModel()  ) {
+
             return $this->redirect(['view', 'id' => $model->course_id]);
         }
 
         return $this->render('create', [
             'model' => $model,
+            'departments' => $departments,
         ]);
     }
 
@@ -85,6 +89,7 @@ class CourseController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $departments = Department::find()->select('dept_name')->indexBy('dept_name')->column();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->course_id]);
@@ -92,6 +97,7 @@ class CourseController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'departments' => $departments,
         ]);
     }
 
