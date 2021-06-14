@@ -75,9 +75,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $user = \common\models\User::findOne(['id'=>Yii::$app->user->id]);
-        if($user->role == \common\models\User::ROLE_ADMIN){
-            return $this->render('index-admin');
+        if($user = \common\models\User::findOne(['id'=>Yii::$app->user->id])) {
+            if ($user->role == \common\models\User::ROLE_ADMIN) {
+                return $this->render('index-admin');
+            }
         }
         return $this->render('index');
     }
