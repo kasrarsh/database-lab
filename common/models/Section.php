@@ -22,8 +22,9 @@ use Yii;
  * @property Teaches[] $teaches
  * @property Instructor[] $iDs0
  */
-class Section extends \yii\db\ActiveRecord
+class Section extends Main
 {
+    public $classroom;
     /**
      * {@inheritdoc}
      */
@@ -38,7 +39,7 @@ class Section extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['course_id', 'sec_id', 'semester', 'year'], 'required'],
+            [['course_id', 'semester', 'year'], 'required'],
             [['year'], 'number'],
             [['course_id', 'sec_id'], 'string', 'max' => 8],
             [['semester'], 'string', 'max' => 6],
@@ -48,7 +49,23 @@ class Section extends \yii\db\ActiveRecord
             [['course_id', 'sec_id', 'semester', 'year'], 'unique', 'targetAttribute' => ['course_id', 'sec_id', 'semester', 'year']],
             [['course_id'], 'exist', 'skipOnError' => true, 'targetClass' => Course::className(), 'targetAttribute' => ['course_id' => 'course_id']],
             [['building', 'room_number'], 'exist', 'skipOnError' => true, 'targetClass' => Classroom::className(), 'targetAttribute' => ['building' => 'building', 'room_number' => 'room_number']],
+            ['classroom','safe']
         ];
+    }
+
+
+    public function beforeSave($insert)
+    {
+         parent::beforeSave($insert);
+        if ($this->isNewRecord) {
+            $this->sec_id = Yii::$app->security->generateRandomString(8);
+        }
+        return true;
+    }
+
+
+    public static function getSemesters(){
+        return['Fall'=>'Fall','Spring'=>'Spring','Summer'=>'Summer','Winter'=>'Winter'];
     }
 
     /**

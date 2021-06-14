@@ -12,17 +12,14 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'course_id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'course_id')->dropDownList($courses) ?>
 
-    <?= $form->field($model, 'sec_id')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'semester')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'semester')->dropDownList(\common\models\Section::getSemesters()) ?>
 
     <?= $form->field($model, 'year')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'building')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'room_number')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'classroom')->dropDownList($classrooms) ?>
 
     <?= $form->field($model, 'time_slot_id')->textInput(['maxlength' => true]) ?>
 

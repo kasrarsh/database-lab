@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use common\models\Classroom;
+use common\models\Course;
 use Yii;
 use common\models\Section;
 use common\models\SectionSearch;
@@ -38,9 +40,11 @@ class SectionController extends Controller
         $searchModel = new SectionSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+
         ]);
     }
 
@@ -68,13 +72,29 @@ class SectionController extends Controller
     public function actionCreate()
     {
         $model = new Section();
+        $courses = Course::find()->select('title')->indexBy('course_id')->column();
+        $buildings = Classroom::find()->select('building')->indexBy('building')->column();
+        $roomNumbers = Classroom::find()->select('room_number')->indexBy('building')->column();
+        $classrooms = array();
+        foreach ($buildings as $index=>$building){
+            $classrooms[] = $building.'-'.$roomNumbers[$index];
+        }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'course_id' => $model->course_id, 'sec_id' => $model->sec_id, 'semester' => $model->semester, 'year' => $model->year]);
+        if ($model->load(Yii::$app->request->post())) {
+            $selectedClassroom = explode('-',$classrooms[$model->classroom]);
+            $model->building = $selectedClassroom[0];
+            $model->room_number = $selectedClassroom[1];
+            if($model->saveModel()) {
+                return $this->redirect(['view', 'course_id' => $model->course_id, 'sec_id' => $model->sec_id, 'semester' => $model->semester, 'year' => $model->year]);
+            }
         }
 
         return $this->render('create', [
             'model' => $model,
+            'courses' => $courses,
+//            'buildings' => $buildings,
+//            'roomNumbers' => $roomNumbers
+            'classrooms' => $classrooms
         ]);
     }
 
@@ -91,13 +111,30 @@ class SectionController extends Controller
     public function actionUpdate($course_id, $sec_id, $semester, $year)
     {
         $model = $this->findModel($course_id, $sec_id, $semester, $year);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'course_id' => $model->course_id, 'sec_id' => $model->sec_id, 'semester' => $model->semester, 'year' => $model->year]);
+        $courses = Course::find()->select('title')->indexBy('course_id')->column();
+        $buildings = Classroom::find()->select('building')->indexBy('building')->column();
+        $roomNumbers = Classroom::find()->select('room_number')->indexBy('building')->column();
+        $classrooms = array();
+        foreach ($buildings as $index=>$building){
+            $classrooms[] = $building.'-'.$roomNumbers[$index];
+        }
+        $model->classroom = $model->building.'-'.$model->room_number;
+        if($key = array_search($model->classroom,$classrooms)){
+            $model->classroom = $key;
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $selectedClassroom = explode('-',$classrooms[$model->classroom]);
+            $model->building = $selectedClassroom[0];
+            $model->room_number = $selectedClassroom[1];
+            if($model->saveModel()) {
+                return $this->redirect(['view', 'course_id' => $model->course_id, 'sec_id' => $model->sec_id, 'semester' => $model->semester, 'year' => $model->year]);
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
+            'courses' => $courses,
+            'classrooms' => $classrooms
         ]);
     }
 
