@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Instructor'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Create Instructor'), ['user/create','role'=>\common\models\User::ROLE_TEACHER], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -29,7 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'ID',
             'name',
             'dept_name',
-            'salary',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

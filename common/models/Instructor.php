@@ -17,7 +17,7 @@ use Yii;
  * @property Teaches[] $teaches
  * @property Section[] $courses
  */
-class Instructor extends \yii\db\ActiveRecord
+class Instructor extends Main
 {
     /**
      * {@inheritdoc}
