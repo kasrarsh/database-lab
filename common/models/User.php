@@ -12,6 +12,7 @@ use yii\web\IdentityInterface;
  *
  * @property integer $id
  * @property string $username
+ * @property string $name
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $verification_token
@@ -21,6 +22,9 @@ use yii\web\IdentityInterface;
  * @property integer $role
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $salary
+ * @property integer $tot_cred
+ * @property integer $dept_name
  * @property string $password write-only password
  */
 class User extends Main implements IdentityInterface
@@ -33,8 +37,6 @@ class User extends Main implements IdentityInterface
     const ROLE_STUDENT = 2;
     const ROLE_ADMIN = 3;
 
-    public $name;
-    public $dept_name;
     public $password;
 
 
@@ -82,8 +84,11 @@ class User extends Main implements IdentityInterface
 
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+
             ['role','default','value'=>self::ROLE_STUDENT],
             ['role','required'],
+
+            [['dept_name','salary','tot_cred'],'safe']
 
         ];
     }
@@ -92,22 +97,25 @@ class User extends Main implements IdentityInterface
     {
         parent::afterSave($insert, $changedAttributes);
         if($this->role == self::ROLE_TEACHER){
-            if(empty(Instructor::findOne(['ID'=>$this->id]))) {
-                $teacher = new Instructor();
-                $teacher->ID = $this->id;
-                $teacher->name = $this->name;
-                $teacher->dept_name =  $this->dept_name;
-                $teacher->save();
+            $teacher = new Instructor();
+            if($oldIns = Instructor::findOne(['ID'=>$this->id])) {
+                $teacher = $oldIns;
             }
+            $teacher->ID = $this->id;
+            $teacher->name = $this->name;
+            $teacher->dept_name =  $this->dept_name;
+            $teacher->saveModel();
         }
         if($this->role == self::ROLE_STUDENT){
-            if(empty(Student::findOne(['ID'=>$this->id]))) {
-                $student = new Student();
-                $student->ID = $this->id;
-                $student->name = $this->name;
-                $student->dept_name = $this->dept_name;
-                $student->save();
+            $student = new Student();
+            if($oldStu = Student::findOne(['ID'=>$this->id])) {
+                $student = $oldStu;
             }
+            $student->ID = $this->id;
+            $student->name = $this->name;
+            $student->dept_name = $this->dept_name;
+            $student->tot_cred = $this->tot_cred;
+            $student->saveModel();
         }
     }
 

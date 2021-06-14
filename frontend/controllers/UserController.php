@@ -19,7 +19,7 @@ class UserController extends \yii\web\Controller
             $model->setPassword($model->password);
             $model->generateAuthKey();
             $model->generateEmailVerificationToken();
-            if($model->save()) {
+            if($model->saveModel()) {
                 if ($role == User::ROLE_STUDENT) {
                     return $this->redirect(['student/view', 'id' => $model->id]);
                 }
@@ -28,7 +28,34 @@ class UserController extends \yii\web\Controller
                 }
             }
         }
-        return $this->render('create',[
+        return $this->render('_form',[
+            'model' => $model,
+            'departments' => $departments,
+        ]);
+
+    }
+    public function actionUpdate($id,$role){
+        $model = User::findOne(['id'=>$id]);
+        $departments = Department::find()->select('dept_name')->indexBy('dept_name')->column();
+        if($model) {
+            if ($model->load(Yii::$app->request->post())) {
+                $model->role = $role;
+                $model->setPassword($model->password);
+                $model->generateAuthKey();
+                $model->generateEmailVerificationToken();
+                if ($model->saveModel()) {
+                    if ($role == User::ROLE_STUDENT) {
+                        return $this->redirect(['student/view', 'id' => $model->id]);
+                    }
+                    if ($role == User::ROLE_TEACHER) {
+                        return $this->redirect(['instructor/view', 'id' => $model->id]);
+                    }
+                }
+            }
+        }else{
+            Yii::$app->session->addFlash('danger','no user found');
+        }
+        return $this->render('_form',[
             'model' => $model,
             'departments' => $departments,
         ]);
