@@ -20,9 +20,9 @@ $user = \common\models\User::findOne(['id'=>Yii::$app->user->id])
         <div class="row text-center">
             <div class="col-lg-4">
                 <?php
-                $url = ['takes/index','TakesSearch'=>['ID'=>$user->id]];
+                $url = ['takes/index','TakesSearch'=>['ID'=>$user->id,'year'=>date('Y')]];
                 ?>
-              <a class="btn btn-success" href=<?= \yii\helpers\Url::to($url) ?>> my lessons</a>
+              <a class="btn btn-success" href=<?= \yii\helpers\Url::to($url) ?>> my current lessons</a>
                 <p>
                     see what you have for this semester
                 </p>

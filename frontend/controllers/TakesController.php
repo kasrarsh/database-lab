@@ -39,8 +39,10 @@ class TakesController extends Controller
     public function actionIndex()
     {
         $searchModel = new TakesSearch();
-        $searchModel->ID = Yii::$app->user->id;
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $params = Yii::$app->request->queryParams;
+
+        $params[$searchModel->formName()]['ID'] = Yii::$app->user->id;
+        $dataProvider = $searchModel->search($params);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -122,8 +124,10 @@ class TakesController extends Controller
 
     public function actionMyReport(){
         $searchModel = new TakesSearch();
-        $searchModel->ID = Yii::$app->user->id;
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $params = Yii::$app->request->queryParams;
+        $params[$searchModel->formName()]['ID'] = Yii::$app->user->id;
+        $params[$searchModel->formName()]['isReport'] = true;
+        $dataProvider = $searchModel->search($params);
         $average = $this->calAverage($dataProvider->models);
 
         return $this->render('report', [

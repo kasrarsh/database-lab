@@ -11,6 +11,7 @@ use common\models\Takes;
  */
 class TakesSearch extends Takes
 {
+    public $isReport;
     /**
      * {@inheritdoc}
      */
@@ -19,6 +20,7 @@ class TakesSearch extends Takes
         return [
             [['ID', 'course_id', 'sec_id', 'semester', 'grade'], 'safe'],
             [['year'], 'number'],
+            ['isReport','safe']
         ];
     }
 
@@ -55,12 +57,16 @@ class TakesSearch extends Takes
             // $query->where('0=1');
             return $dataProvider;
         }
+        if($this->isReport){
+            $query->andFilterWhere(['not',['year'=>date('Y')]]);
+        }
 
         // grid filtering conditions
         $query->andFilterWhere([
             'year' => $this->year,
             'ID' => $this->ID
         ]);
+
 
         $query->andFilterWhere(['like', 'course_id', $this->course_id])
             ->andFilterWhere(['like', 'sec_id', $this->sec_id])
