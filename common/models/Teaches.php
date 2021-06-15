@@ -13,10 +13,10 @@ use Yii;
  * @property string $semester
  * @property float $year
  *
- * @property Section $course
+ * @property Section $section
  * @property Instructor $iD
  */
-class Teaches extends \yii\db\ActiveRecord
+class Teaches extends Main
 {
     /**
      * {@inheritdoc}
@@ -58,11 +58,11 @@ class Teaches extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Course]].
+     * Gets query for [[Section]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCourse()
+    public function getSection()
     {
         return $this->hasOne(Section::className(), ['course_id' => 'course_id', 'sec_id' => 'sec_id', 'semester' => 'semester', 'year' => 'year']);
     }

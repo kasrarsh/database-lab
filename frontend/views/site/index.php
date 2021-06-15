@@ -20,14 +20,7 @@ $user = \common\models\User::findOne(['id'=>Yii::$app->user->id])
         <div class="row text-center">
             <div class="col-lg-4">
                 <?php
-                    $url='';
-                    if($user) {
-                        if ( $user->role == \common\models\User::ROLE_STUDENT) {
-                            $url = ['takes/index','TakesSearch'=>['ID'=>$user->id]];
-                        } elseif ( $user->role == \common\models\User::ROLE_TEACHER) {
-                            $url = ['teaches/index','TeachesSearch'=>['ID'=>$user->id]];
-                        }
-                    }
+                $url = ['takes/index','TakesSearch'=>['ID'=>$user->id]];
                 ?>
               <a class="btn btn-success" href=<?= \yii\helpers\Url::to($url) ?>> my lessons</a>
                 <p>

@@ -2,6 +2,10 @@
 
 namespace frontend\controllers;
 
+use common\models\Instructor;
+use common\models\Section;
+use common\models\Student;
+use common\models\Takes;
 use Yii;
 use common\models\Teaches;
 use common\models\TeachesSearch;
@@ -36,7 +40,9 @@ class TeachesController extends Controller
     public function actionIndex()
     {
         $searchModel = new TeachesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $params = Yii::$app->request->queryParams;
+        $searchModel->ID = Yii::$app->user->id;
+        $dataProvider = $searchModel->search($params);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -101,6 +107,43 @@ class TeachesController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    public function actionTeachLesson(){
+        $sections = Section::find()->all();
+        $sectionItems = array();
+        $delimiter = ' / ';
+        if(!Yii::$app->user->isGuest) {
+            $teacher = Instructor::findOne(['ID' => Yii::$app->user->id]);
+            foreach ($sections as $section) {
+                $data = $section->sec_id.$delimiter.$section->course_id . $delimiter . $section->semester . $delimiter . $section->year . $delimiter . $section->building . $delimiter . $section->room_number;
+                array_push($sectionItems, $data);
+            }
+            if($teacher->load(Yii::$app->request->post())){
+                $allSaved = true;
+                foreach ($teacher->takes as $sectionIndex){
+                    $section = explode($delimiter, $sectionItems[$sectionIndex]);
+                    $teaches = new Teaches();
+                    $teaches->ID = $teacher->ID;
+                    $teaches->sec_id = $section[0];
+                    $teaches->course_id = $section[1];
+                    $teaches->semester = $section[2];
+                    $teaches->year = intval($section[3]);
+                    if(!$teaches->saveModel()){
+                        $allSaved = false;
+                    }
+                }
+                if($allSaved){
+                    return $this->redirect(['teaches/index']);
+                }
+            }
+            return $this->render('teach-lesson', [
+                'teacher' => $teacher,
+                'sectionItems' => $sectionItems
+            ]);
+        }
+        return $this->redirect(['site/login']);
+
     }
 
     /**

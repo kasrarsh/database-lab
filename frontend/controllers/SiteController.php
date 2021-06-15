@@ -79,9 +79,13 @@ class SiteController extends Controller
             if ($user->role == \common\models\User::ROLE_ADMIN) {
                 return $this->render('index-admin');
             }
+            if($user->role == \common\models\User::ROLE_TEACHER){
+                return $this->render('index-teacher');
+            }
         }
         return $this->render('index');
     }
+
 
     /**
      * Logs in a user.

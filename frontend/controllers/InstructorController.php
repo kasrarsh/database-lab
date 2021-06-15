@@ -3,9 +3,17 @@
 namespace frontend\controllers;
 
 use common\models\Department;
+use common\models\Section;
+use common\models\Student;
+use common\models\StudentSearch;
+use common\models\Takes;
+use common\models\Teaches;
+use common\models\TeachesSearch;
 use Yii;
 use common\models\Instructor;
 use common\models\InstructorSearch;
+use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -42,6 +50,33 @@ class InstructorController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionMyStudents(){
+        $params = Yii::$app->request->queryParams;
+        $sections = Section::find()->select('sec_id')->indexBy('sec_id')->column();
+        array_push($sections,null);
+        $secId = null;
+        if(!empty($params['sec_id'])){
+            $secId = $params['sec_id'];
+        }
+        $currentYear = date('Y');
+        $secIds = Teaches::find()->where(['ID'=>Yii::$app->user->id])->andWhere(['year'=>$currentYear])->andFilterWhere(['sec_id'=>$secId])->select('sec_id')->indexBy('sec_id')->column();
+        $studentIds = array();
+        foreach ($secIds as $secId){
+            $takes = Takes::find()->where(['sec_id'=>$secId])->one();
+            $student = Student::findOne(['ID'=>$takes->ID]);
+            array_push($studentIds,$student->ID);
+        }
+        $studentSearch = new StudentSearch();
+        $studentSearch->idsList = $studentIds;
+        $studentProvider = $studentSearch->searchMyStudent($params);
+
+        return $this->render('my-students',[
+            'dataProvider'=>$studentProvider,
+            'searchModel' => $studentSearch,
+            'sections' => $sections
         ]);
     }
 
