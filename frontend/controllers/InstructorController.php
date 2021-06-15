@@ -37,6 +37,14 @@ class InstructorController extends Controller
             ],
         ];
     }
+    public function beforeAction($action)
+    {
+         if(parent::beforeAction($action)){
+             $this->enableCsrfValidation = false;
+             return true;
+         }
+         return false;
+    }
 
     /**
      * Lists all Instructor models.
@@ -61,13 +69,18 @@ class InstructorController extends Controller
         if(!empty($params['sec_id'])){
             $secId = $params['sec_id'];
         }
-        $currentYear = date('Y');
-        $secIds = Teaches::find()->where(['ID'=>Yii::$app->user->id])->andWhere(['year'=>$currentYear])->andFilterWhere(['sec_id'=>$secId])->select('sec_id')->indexBy('sec_id')->column();
+        $year = null;
+        if(!empty($params['year'])) {
+            $year = $params['year'];
+        }
+        $secIds = Teaches::find()->where(['ID'=>Yii::$app->user->id])->andFilterWhere(['year'=>$year])->andFilterWhere(['sec_id'=>$secId])->select('sec_id')->indexBy('sec_id')->column();
         $studentIds = array();
         foreach ($secIds as $secId){
-            $takes = Takes::find()->where(['sec_id'=>$secId])->one();
-            $student = Student::findOne(['ID'=>$takes->ID]);
-            array_push($studentIds,$student->ID);
+            $takes = Takes::find()->where(['sec_id'=>$secId])->all();
+            foreach ($takes as $take) {
+                $student = Student::findOne(['ID' => $take->ID]);
+                array_push($studentIds,$student->ID);
+            }
         }
         $studentSearch = new StudentSearch();
         $studentSearch->idsList = $studentIds;
@@ -78,6 +91,46 @@ class InstructorController extends Controller
             'searchModel' => $studentSearch,
             'sections' => $sections
         ]);
+    }
+
+    public function actionGiveGrade(){
+        $this->enableCsrfValidation = false;
+        $params = Yii::$app->request->queryParams;
+        $model = new Instructor();
+        $secId = null;
+        if(!empty($params['sec_id'])){
+            $secId = $params['sec_id'];
+        }
+        $year = null;
+        if(!empty($params['year'])) {
+            $year = $params['year'];
+        }
+        $secIds = Teaches::find()->where(['ID'=>Yii::$app->user->id])->andFilterWhere(['year'=>$year])->andFilterWhere(['sec_id'=>$secId])->select('sec_id')->indexBy('sec_id')->column();
+        $gradingData = array();
+        foreach ($secIds as $secId){
+            $takes = Takes::find()->where(['sec_id'=>$secId])->all();
+            foreach ($takes as $take) {
+                $student = Student::findOne(['ID' => $take->ID]);
+                array_push($gradingData,['studentName'=>$student->name,'takeId'=>$take->ID,'grade'=>$take->grade]);
+            }
+
+        }
+        if($postData = Yii::$app->request->post()){
+            $count = 0;
+           foreach ($postData['takes'] as $takeId=>$grade){
+                $take = Takes::findOne(['ID'=>$takeId]);
+                $take->grade = $grade;
+                if($take->saveModel()){
+                    $count ++;
+                }
+           }
+           $this->redirect('');
+        }
+        return $this->render('give-grade',[
+           'gradingData'=> $gradingData
+        ]);
+
+
     }
 
     /**
